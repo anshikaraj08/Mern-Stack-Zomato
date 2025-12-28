@@ -4,7 +4,7 @@ import mongoose from "mongoose";
 //server will connect to db only when this function runs
 export function connectDB(){
 
-    mongoose.connect("mongodb://localhost:27017/food-vew")
+    mongoose.connect(process.env.MONGODB_URI)
     .then(()=>{
         console.log("MongoDb Connected");
     })

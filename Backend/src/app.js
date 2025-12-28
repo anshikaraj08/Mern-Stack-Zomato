@@ -6,6 +6,9 @@ import authRoutes from './routes/auth.routes.js';
 //server instance
 const app = express();
 app.use(cookieParser());
+// ❌ Without express.json(): req.body = undefined
+// ✅ With express.json(): req.body = {fullName: "John", email: "john@test.com", password: "123"}
+
 app.use(express.json());//middleware to fetches data to req.body and make it readable
 
 

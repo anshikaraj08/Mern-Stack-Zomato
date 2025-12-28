@@ -4,6 +4,7 @@ import bcrypt from 'bcryptjs';// bcrypt is a password-hashing library used in No
 import jwt from 'jsonwebtoken';
 
 
+
 async function registerUser(req,res) {
     const {fullName,email,password}=req.body;
 
@@ -25,7 +26,7 @@ async function registerUser(req,res) {
     })
     const token= jwt.sign({//data is given in object form also unique
         id:user._id,
-    },"47307d9ff076f781a2464a97a34d2c6b")
+    },process.env.JWT_SECRET)
     res.cookie("token",token)
     res.status(201).json({
         message: "User registered successfully",
@@ -34,17 +35,43 @@ async function registerUser(req,res) {
             email:user.email,
             fullName: user.fullName
         }
+    })   
+}
+async function loginUser(req,res){
+    const {email,password} = req.body;
+    const user=await userModel.findOne({email});
+    if(!user){
+        return res.status(400).json({
+            message:"Invalid email and password"
+        })
+
+    }
+    const isPasswordValid=await bcrypt.compare(password,user.password);
+    if(!isPasswordValid){
+        return  res.status(400).json({
+            message:"Invalid email and password"
+        })
+
+    }
+
+    const token=jwt.sign({
+        id:user._id,
+    },process.env.JWT_SECRET)
+
+    res.cookie("token",token)
+
+     res.status(201).json({
+        message: "User logged in successfully",
+        user:{
+            _id:user._id,
+            email:user.email,
+            fullName: user.fullName
+        }
     })
 
 
-
-
-    
-}
-async function loginUser(req,res){
-
 }
 
-
+                 
 
 export default { registerUser, loginUser };
