@@ -3,6 +3,7 @@
 import express from 'express'
 import cookieParser from 'cookie-parser' //used as a middleware
 import authRoutes from './routes/auth.routes.js';
+import foodRoutes from './routes/auth.routes.js';
 //server instance
 const app = express();
 app.use(cookieParser());
@@ -14,6 +15,7 @@ app.use(express.json());//middleware to fetches data to req.body and make it rea
 
 
 app.use('/api/auth',authRoutes);
+app.use('/api/auth',foodRoutes);
 //dummy route 
 app.get('/',(req,res)=>{
     res.send("Hello world");
