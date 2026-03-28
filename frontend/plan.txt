@@ -1,0 +1,7 @@
+create 4 routes
+/user/register=>>user register form
+//user/login=>user login form
+
+
+//food/register => food register form
+//food-partner/login => food-partner login form

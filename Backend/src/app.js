@@ -3,7 +3,9 @@
 import express from 'express'
 import cookieParser from 'cookie-parser' //used as a middleware
 import authRoutes from './routes/auth.routes.js';
-import foodRoutes from './routes/auth.routes.js';
+import foodRoutes from './routes/food.routes.js';
+
+
 //server instance
 const app = express();
 app.use(cookieParser());
@@ -13,15 +15,16 @@ app.use(cookieParser());
 app.use(express.json());//middleware to fetches data to req.body and make it readable
 
 
-
+app.use('/api/food', foodRoutes); // ✅ correct path
 app.use('/api/auth',authRoutes);
-app.use('/api/auth',foodRoutes);
+// app.use('/api/auth',foodRoutes);
+
 //dummy route 
 app.get('/',(req,res)=>{
     res.send("Hello world");
 })
 
 
-
+//this app was created here but to start server export it to server.js
 export default app;
 //module.exports=app; //for commonjs

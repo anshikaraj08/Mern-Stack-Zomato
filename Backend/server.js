@@ -1,9 +1,11 @@
-//start server      
+//start server 
+import 'dotenv/config'; 
+import dotenv from 'dotenv';  
+dotenv.config();    
 import app from './src/app.js';
-import dotenv from 'dotenv'; 
 import { connectDB } from './src/db/db.js';
-dotenv.config();
 
+//start database
 connectDB();
 
 app.listen(3000,()=>{

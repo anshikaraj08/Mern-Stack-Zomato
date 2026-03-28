@@ -1,12 +1,14 @@
 //routes logic are here
 import userModel from "../models/user.model.js";
-import foodPartnerModel from "../models/foodpartner.model.js";
+import foodPartnerModel from "../models/foodPartner.model.js";
 import bcrypt from 'bcryptjs';// bcrypt is a password-hashing library used in Node.js.
 import jwt from 'jsonwebtoken';
 
 
 
 async function registerUser(req,res) {
+    //we get all three of these from res.body but express server cant read data from req.body by default therefore use middle ware
+    // app.use(express.json()); in server file
     const {fullName,email,password}=req.body;
 
     const isUserAlreadyExists= await userModel.findOne({email})
@@ -21,14 +23,20 @@ async function registerUser(req,res) {
     //to hash password bcryptjs library is there
     const hashedPassword = await bcrypt.hash(password,10); // 10 → Salt Rounds. This number controls how strong the hashing is.
     
+    //register user
     const user=await userModel.create({
         fullName,
         email,
         password:hashedPassword
     })
+
+    //for next request on server we create token to find out from where request is comming
+    //token saved in cookies
+
     const token= jwt.sign({//data is given in object form also unique
         id:user._id,
     },process.env.JWT_SECRET)
+
     res.cookie("token",token)
 
     res.status(201).json({
@@ -43,6 +51,7 @@ async function registerUser(req,res) {
 
 async function loginUser(req,res){
     const {email,password} = req.body;
+    //{} is used because MongoDB query conditions are always written as objects.
     const user=await userModel.findOne({email});
     if(!user){
         return res.status(400).json({
@@ -50,12 +59,12 @@ async function loginUser(req,res){
         })
 
     }
+    //Because you cannot compare plain password with hashed password using ==. so use bcrypt.compare
     const isPasswordValid=await bcrypt.compare(password,user.password);
     if(!isPasswordValid){
         return  res.status(400).json({
             message:"Invalid email and password"
         })
-
     }
 
     const token=jwt.sign({
@@ -81,7 +90,6 @@ async function logoutUser(req,res){
     res.status(200).json({
         message: "User logged out successfully"
     })
-
 }
 
 async function registerFoodPartner(req,res){
@@ -100,8 +108,8 @@ async function registerFoodPartner(req,res){
     })
 
     const token= jwt.sign({
-        id:foodPartner._id,
-    },process.env.JWT_SECRET);
+        id:foodPartner._id, // payload (user info)
+    },process.env.JWT_SECRET); // secret key
 
     res.cookie("token",token);
 
@@ -160,5 +168,5 @@ async function logoutFoodPartner(req,res){
 
 }
                  
-
+//controllers export as multiple object export
 export default { registerUser, loginUser,logoutUser,registerFoodPartner,loginFoodPartner,logoutFoodPartner};

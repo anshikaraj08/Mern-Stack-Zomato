@@ -2,7 +2,9 @@
 import mongoose from "mongoose";
 
 //server will connect to db only when this function runs
-export function connectDB(){
+//call this to run database cause mongoose.connect will get called only then
+// function call on server.js
+export function connectDB(){ 
 
     mongoose.connect(process.env.MONGODB_URI)
     .then(()=>{
